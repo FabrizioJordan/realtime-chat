@@ -7,6 +7,11 @@ import { createServer } from "node:http"
 const port = process.env.port ?? 3000 
 
 const app = express() // creando app con express
+
+// agregando folder public para cargar archivos estáticos
+app.use(express.static('public'))
+
+
 const server = createServer(app) // creando server http
 
 const io = new Server(server)
