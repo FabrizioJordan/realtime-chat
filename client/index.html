@@ -4,37 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RealTime Chat</title>
-    <script type="module">
-        import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js'
-
-        const socket = io()
-
-        const form = document.getElementById('form')
-        const input = document.getElementById('input')
-        const messages = document.getElementById('messages')
-
-        socket.on('chat message', (msg) => {
-          const item = `
-          <li>
-           ${msg}
-          </li>
-          `
-          messages.insertAdjacentHTML('beforeend', item)
-        })
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault()
-
-            if(input.value){
-                socket.emit('chat message', input.value)
-                input.value = ""
-            }
-
-        })
-    </script>
-
     <style>
-        *,
+      
+      *,
         *::before,
         *::after {
           box-sizing: border-box;
@@ -69,7 +41,11 @@
         }
     
         #messages>li:nth-child(odd) {
-          background: #000;
+          background: #1b1b1b;
+        }
+
+        #messages>li:nth-child(even) {
+          background: #141414;
         }
     
         #chat {
@@ -114,7 +90,35 @@
         #form>button:hover {
           background: #0cf;
         }
-      </style>
+    </style>
+    <script type="module">
+        import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js'
+
+        const socket = io()
+
+        const form = document.getElementById('form')
+        const input = document.getElementById('input')
+        const messages = document.getElementById('messages')
+
+        socket.on('chat message', (msg) => {
+          const item = `
+          <li>
+           ${msg}
+          </li>
+          `
+          messages.insertAdjacentHTML('beforeend', item)
+        })
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            if(input.value){
+                socket.emit('chat message', input.value)
+                input.value = ""
+            }
+
+        })
+    </script>
 </head>
 
 <body>
