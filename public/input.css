@@ -12,3 +12,7 @@
           *::after {
             box-sizing: border-box;
           }
+
+.invertSvg{
+  filter: invert(1);
+}

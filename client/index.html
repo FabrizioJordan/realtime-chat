@@ -35,23 +35,37 @@
     </script>
 </head>
 
-<body class="m-0 grid grid-rows-1 place-content-center h-screen w-full">
+<body class="relative m-0 grid grid-rows-1 place-content-center h-screen w-full">
 
-    <section class="py-8 flex flex-col gap-4">
-      <h1 class="text-lg font-semibold">Real Time Chat</h1>
-      <section id="chat" class="border border-[#ccc] rounded-[4px] overflow-hidden w-[350px] h-full relative">
-        <ul id="messages"
-        class="list-none m-0 p-0 overflow-y-scroll h-full scroll-smooth pb-12 [&>li]:py-[.5rem] [&>li]:px-[1rem] [&>li]:odd:bg-[#1b1b1b] [&>li]:even:bg-[#141414]">
-        </ul>
-        <form id="form" 
-        class="flex h-[48px] bottom-0 left-0 right-2 absolute p-1 [&>button]:px-2 [&>button]:bg-[#0099ff8c] hover:[&>button]:bg-[#00ccffb7] [&>button]:text-white [&>button]:border-0 [&>button]:m-1 [&>button]:rounded-[4px]"
-        >
-          <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" 
-          class="rounded-full border border-[#eee] flex-1 m-1 py-0 px-2 focus:outline-0"
-          />
-          <button class="" type="submit">Enviar</button>
-        </form>
+    <section class=" max-w-4xl w-full h-full grid grid-rows-1 place-content-center ">
+
+      <article class="absolute top-4 right-4">
+        <a class="hover:" href="https://github.com/FabrizioJordan/realtime-chat" target="_blank" rel="noopener noreferrer">
+          <img class="size-6 invertSvg hover:opacity-65 transition-opacity duration-300" src="./icons/github.svg" alt="">
+        </a>
+      </article>
+      
+      <article class="absolute top-2 left-4">
+        <h1 class="text-xl font-bold tracking-wide">Real Time Chat</h1>
+        <p class="text-sm text-gray-600">by FabricioJordán</p>
+      </article>
+  
+      <section class="py-8 pt-16 flex flex-col gap-4">
+        <section id="chat" class="border border-[#ccc] rounded-[8px] overflow-hidden w-[400px] h-full relative">
+          <ul id="messages"
+          class="list-none m-0 p-0 overflow-y-scroll h-full scroll-smooth pb-12 [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]">
+          </ul>
+          <form id="form" 
+          class="flex h-[48px] bottom-0 left-0 right-2 absolute p-1"
+          >
+            <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" 
+            class="rounded-full border border-[#eee] flex-1 m-1 py-0 px-4 focus:outline-0"
+            />
+            <button class="rounded-lg text-white border-0 m-1 bg-[#0099ffb3] hover:bg-[#0099ff8c] px-2 transition-colors duration-300" type="submit">Enviar</button>
+          </form>
+        </section>
       </section>
+
     </section>
   
 </body>

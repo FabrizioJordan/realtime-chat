@@ -11,10 +11,12 @@ const app = express() // creando app con express
 // agregando folder public para cargar archivos estáticos
 app.use(express.static('public'))
 
-
 const server = createServer(app) // creando server http
 
-const io = new Server(server)
+const io = new Server(server, {
+    connectionStateRecovery: {
+    }
+})
 
 io.on('connection', (socket) => {
     console.log('a user has connected')
