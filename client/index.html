@@ -5,22 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RealTime Chat</title>
     <link rel="stylesheet" href="./styles.css">
+
     <script type="module">
+
         import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js'
 
-        const socket = io()
+        const getUsername = async () => {
+          const username = localStorage.getItem('username')
+          if(username){
+            console.log(`User ${username} exists`)
+            return username.charAt(0).toUpperCase() + username.slice(1)
+          }
+
+          const res = await fetch("https://random-data-api.com/api/users/random_user")
+          const { username: randomUsername } = await res.json()
+
+          const newRandomUsername = randomUsername.charAt(0).toUpperCase() + username.slice(1)
+          localStorage.setItem('username', newRandomUsername)
+          return newRandomUsername
+        }
+
+        const socket = io({
+          auth:{
+            username: await getUsername(),
+            serverOffset: 0
+          }
+        })
 
         const form = document.getElementById('form')
         const input = document.getElementById('input')
         const messages = document.getElementById('messages')
 
-        socket.on('chat message', (msg) => {
+        socket.on('chat message', (msg, serverOffset, username) => {
           const item = `
           <li>
-           ${msg}
+           <small>${username}</small>
+           <p>${msg}</p>
           </li>
           `
           messages.insertAdjacentHTML('beforeend', item)
+          socket.auth.serverOffset = serverOffset
+          // scroll to bottom of messages
+          messages.scrollTop = messages.scrollHeight
         })
 
         form.addEventListener('submit', (e) => {
@@ -30,16 +56,27 @@
                 socket.emit('chat message', input.value)
                 input.value = ""
             }
-
         })
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const clearChatBtn = document.getElementById('clearChatBtn');
+      
+          clearChatBtn.addEventListener('click', clearChatForUser);
+        });
+
+        function clearChatForUser() {
+          messages.innerHTML = "";  // Limpia solo el chat del usuario actual
+        }
+
+
     </script>
 </head>
 
 <body class="m-0 h-screen w-full flex justify-center">
 
-    <section class="max-w-3xl w-full h-full flex flex-col gap-6 items-center pt-2 pb-8">
+    <section class="max-w-4xl w-full h-full max-h-[1000vh] flex flex-col gap-6 items-center pt-2 pb-4">
 
-      <header class="w-full flex justify-between items-center px-4">
+      <header class="bg-transparent w-full flex justify-between items-center px-4">
         <article class="">
           <h1 class="text-xl font-bold tracking-wide">Real Time Chat</h1>
           <p class="text-sm text-gray-600">by FabricioJordán</p>
@@ -52,12 +89,16 @@
         </article>
       </header>
 
-      <main class="w-full h-full grid grid-rows-1 place-content-center">
-        <section class="flex flex-col gap-4 h-full">
-          <section id="chat" class="border border-[#ccc] rounded-[8px] overflow-hidden w-[400px] h-full relative">
+      <main class="w-full h-full flex place-content-center border border-[#cccccc36] rounded-[8px]">
+
+        <section class="flex flex-col gap-4 w-full h-full ">
+          <section id="chat" class="overflow-hidden w-full h-full relative">
+
+            <h2 class="text-xl font-bold tracking-wider text-center ">Chat Room</h2>
             <ul id="messages"
-            class="list-none m-0 p-0 overflow-y-scroll h-full scroll-smooth pb-12 [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]">
+            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-20 [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]">
             </ul>
+
             <form id="form" 
             class="flex h-[48px] bottom-0 left-0 right-2 absolute p-1"
             >
@@ -67,6 +108,17 @@
               <button class="rounded-lg text-white border-0 m-1 bg-[#0099ffb3] hover:bg-[#0099ff8c] px-2 transition-colors duration-300" type="submit">Enviar</button>
             </form>
           </section>
+        </section>
+
+        <section class="bg-[#30303083] w-[40%] h-full rounded-r-[8px]">
+          <article class="">
+            <ul>
+              <li>
+                <button id="clearChatBtn">Clear My Chat</button>
+
+              </li>
+            </ul>
+          </article>
         </section>
       </main>
 
