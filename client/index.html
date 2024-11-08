@@ -35,20 +35,58 @@
         const form = document.getElementById('form')
         const input = document.getElementById('input')
         const messages = document.getElementById('messages')
+        const loadMoreButton = document.getElementById('load-more'); // Botón para cargar más mensajes
 
-        socket.on('chat message', (msg, serverOffset, username) => {
+        let lastLoadedId = null; // Almacena el ID del último mensaje cargado
+
+        // Recibir nuevos mensajes cargados
+        socket.on('chat message', (msg, messageId, username) => {
           const item = `
-          <li>
-           <small>${username}</small>
-           <p>${msg}</p>
-          </li>
-          `
-          messages.insertAdjacentHTML('beforeend', item)
-          socket.auth.serverOffset = serverOffset
-          // scroll to bottom of messages
-          messages.scrollTop = messages.scrollHeight
-        })
+              <li>
+                  <small>${username}</small>
+                  <p>${msg}</p>
+              </li>
+          `;
+          // Insertar al principio de la lista de mensajes
+          messages.insertAdjacentHTML('beforeend', item); // Inserta los mensajes al principio
 
+          // Desplazar hacia abajo si el usuario está en la parte más baja del chat
+          if (messages.scrollTop === messages.scrollHeight - messages.clientHeight) {
+              messages.scrollTop = messages.scrollHeight;
+          }
+      });
+
+      // Recibir nuevos mensajes cargados
+      socket.on('chat old messages', (msg, messageId, username) => {
+          const item = `
+              <li>
+                  <small>${username}</small>
+                  <p>${msg}</p>
+              </li>
+          `;
+          // Insertar al principio de la lista de mensajes
+          messages.insertAdjacentHTML('afterbegin', item); // Inserta los mensajes al principio
+
+          // Desplazar hacia abajo si el usuario está en la parte más baja del chat
+          if (messages.scrollTop === messages.scrollHeight - messages.clientHeight) {
+              messages.scrollTop = messages.scrollHeight;
+          }
+      });
+
+        // Escuchar el evento de "Cargar más mensajes"
+        loadMoreButton.addEventListener('click', () => {
+            if (!loadMoreButton.disabled) {
+                socket.emit('load more messages');
+            }
+        });
+
+        // Escuchar el evento 'no more messages' para notificar que no hay más mensajes
+        socket.on('no more messages', () => {
+            loadMoreButton.disabled = true;  // Deshabilitar el botón de cargar más cuando no hay más mensajes
+            loadMoreButton.innerText = "No hay más mensajes";  // Cambiar texto del botón
+        });
+
+        
         form.addEventListener('submit', (e) => {
             e.preventDefault()
 
@@ -68,6 +106,9 @@
           messages.innerHTML = "";  // Limpia solo el chat del usuario actual
         }
 
+        socket.on('console log server', (msgConsole) => {
+          console.log(msgConsole)
+        })
 
     </script>
 </head>
@@ -89,33 +130,41 @@
         </article>
       </header>
 
-      <main class="w-full h-full flex place-content-center border border-[#cccccc36] rounded-[8px]">
+      <main class="w-full h-full max-h-[86vh] flex place-content-center border border-[#cccccc36] rounded-[8px]">
 
         <section class="flex flex-col gap-4 w-full h-full ">
           <section id="chat" class="overflow-hidden w-full h-full relative">
 
             <h2 class="text-xl font-bold tracking-wider text-center ">Chat Room</h2>
             <ul id="messages"
-            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-20 [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]">
+            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-[9rem] [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]
+            [&_span]:font-medium [&_span]:text-sm [&_span]:tracking-wider [&_hr]:w-full [&_hr]:bg-[#333]">
             </ul>
 
             <form id="form" 
-            class="flex h-[48px] bottom-0 left-0 right-2 absolute p-1"
+            class="h-[100px] bottom-0 left-0 right-2 absolute rounded-lg
+            flex flex-col gap-1 bg-[#1d1d1d] px-3 py-2 mr-4 ml-3 mb-2 "
             >
-              <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" 
-              class="rounded-full border border-[#eee] flex-1 m-1 py-0 px-4 focus:outline-0"
-              />
-              <button class="rounded-lg text-white border-0 m-1 bg-[#0099ffb3] hover:bg-[#0099ff8c] px-2 transition-colors duration-300" type="submit">Enviar</button>
+              <div class="">
+                <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" 
+                class="w-full rounded-full border border-[#eeeeee8e] flex-1 m-1 py-0 px-3 focus:outline-0"
+                />
+              </div>
+              <div>
+                <button class="rounded-lg text-white border-0 m-1 bg-[#0099ffb3] hover:bg-[#0099ff8c] px-3 py-2 transition-colors duration-300" type="submit">Enviar</button>
+              </div>
             </form>
           </section>
         </section>
 
         <section class="bg-[#30303083] w-[40%] h-full rounded-r-[8px]">
           <article class="">
-            <ul>
+            <ul class="flex flex-col gap-4 px-4 py-3">
               <li>
                 <button id="clearChatBtn">Clear My Chat</button>
-
+              </li>
+              <li>
+                <button id="load-more">Cargar más mensajes</button> <!-- Botón para cargar más -->
               </li>
             </ul>
           </article>
