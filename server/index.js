@@ -49,41 +49,40 @@ CREATE TABLE IF NOT EXISTS messages (
     
         // Empezamos a emitir mensajes cuando el cliente se conecta
         socket.on('load more messages', async () => {
-        // Salir si ya cargamos todos los mensajes
-        if (allMessagesLoaded) return;
+            // Salir si ya cargamos todos los mensajes
+            if (allMessagesLoaded) return;
 
-        const lastLoadedMessageId = loadedMessages.length > 0 ? loadedMessages[0].id : 0;
+            const lastLoadedMessageId = loadedMessages.length > 0 ? loadedMessages[0].id : 0;
 
-
-        try {
-            const messagesToLoad = await db.execute({
-                sql: 'SELECT id, content, username, timestamp FROM messages WHERE id < ? ORDER BY id DESC LIMIT 50',
-                args: [lastLoadedMessageId]
-            });
-
-            if(allMessagesLoaded == false){
-
-                // Agrega los mensajes cargados al inicio de la lista
-                messagesToLoad.rows.forEach(message => {
-                    socket.emit('chat old messages', message.content, message.id.toString(), message.username, message.timestamp);
+            try {
+                const messagesToLoad = await db.execute({
+                    sql: 'SELECT id, content, username, timestamp FROM messages WHERE id < ? ORDER BY id DESC LIMIT 50',
+                    args: [lastLoadedMessageId]
                 });
 
-                // Verificar uno por uno de los mensajes que se están por mostrar si alguno es el id 0
-                messagesToLoad.rows.forEach(item => {
-                    if(item["id"] == 1){
-                        allMessagesLoaded = true
-                        socket.emit('no more messages');
-                        return;
-                    }
-                })
-            }
-            // Actualiza la lista de mensajes cargados
-            loadedMessages = [...messagesToLoad.rows, ...loadedMessages];
+                if(allMessagesLoaded == false){
 
-        } catch (error) {
-            console.error('Error al cargar más mensajes:', error);
-        }
-    });
+                    // Agrega los mensajes cargados al inicio de la lista
+                    messagesToLoad.rows.forEach(message => {
+                        socket.emit('chat old messages', message.content, message.id.toString(), message.username, message.timestamp);
+                    });
+
+                    // Verificar uno por uno de los mensajes que se están por mostrar si alguno es el id 0
+                    messagesToLoad.rows.forEach(item => {
+                        if(item["id"] == 1){
+                            allMessagesLoaded = true
+                            socket.emit('no more messages');
+                            return;
+                        }
+                    })
+                }
+                // Actualiza la lista de mensajes cargados
+                loadedMessages = [...messagesToLoad.rows, ...loadedMessages];
+
+            } catch (error) {
+                console.error('Error al cargar más mensajes:', error);
+            }
+        });
 
 
     
@@ -98,7 +97,7 @@ CREATE TABLE IF NOT EXISTS messages (
                 // Enviar los mensajes en orden inverso para que aparezcan correctamente en el frontend
                 const orderedMessages = results.rows.reverse();
                 orderedMessages.forEach(row => {
-                    socket.emit('chat message', row.content, row.id, row.username, row.timestamp);
+                    socket.emit('chat last messages', row.content, row.id, row.username, row.timestamp);
                 });
     
                 // Marcar como cargados estos mensajes (del 31 al 81)
@@ -123,7 +122,7 @@ CREATE TABLE IF NOT EXISTS messages (
                 const timestamp = new Date().toISOString(); // Formato de fecha en ISO para uniformidad
 
                 // Emitir el evento de nuevo mensaje al cliente
-                io.emit('chat message', msg, messageId.toString(), username, timestamp);
+                io.emit('chat message', msg, messageId.toString(), username, timestamp); 
             } catch (e) {
                 console.error(e);
             }
