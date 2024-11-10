@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "concurrently": "9.1.0",
+    "dayjs": "1.11.13",
     "tailwindcss": "3.4.14"
   }
 }

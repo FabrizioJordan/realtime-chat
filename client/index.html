@@ -20,7 +20,7 @@
           const res = await fetch("https://random-data-api.com/api/users/random_user")
           const { username: randomUsername } = await res.json()
 
-          const newRandomUsername = randomUsername.charAt(0).toUpperCase() + username.slice(1)
+          const newRandomUsername = randomUsername.charAt(0).toUpperCase() + newRandomUsername.slice(1)
           localStorage.setItem('username', newRandomUsername)
           return newRandomUsername
         }
@@ -32,45 +32,84 @@
           }
         })
 
+
         const form = document.getElementById('form')
         const input = document.getElementById('input')
         const messages = document.getElementById('messages')
         const loadMoreButton = document.getElementById('load-more'); // Botón para cargar más mensajes
+        const scrollDownBtn = document.getElementById('scrollDownBtn'); // Botón para cargar más mensajes
 
         let lastLoadedId = null; // Almacena el ID del último mensaje cargado
 
+        function getUserTimeZone() {
+          // Obtiene el nombre de la zona horaria del usuario
+          return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        }
+
         // Recibir nuevos mensajes cargados
-        socket.on('chat message', (msg, messageId, username) => {
+        socket.on('chat message', (msg, messageId, username, timestamp) => {
+          const formattedDate = new Date(timestamp).toLocaleDateString(undefined, {
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Detectar la zona horaria del usuario
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+          
+          // Formateamos la hora
+          const formattedTime = new Date(timestamp).toLocaleTimeString(getUserTimeZone(), {
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Detectar la zona horaria del usuario
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          });
+          
+        console.log(timestamp)
+        console.log(formattedTime)
           const item = `
-              <li>
-                  <small>${username}</small>
+              <li>  
+                  <small>${username} - ${formattedDate} ${formattedTime}</small>
                   <p>${msg}</p>
               </li>
           `;
-          // Insertar al principio de la lista de mensajes
+          // Insertar al final de la lista de mensajes
           messages.insertAdjacentHTML('beforeend', item); // Inserta los mensajes al principio
 
-          // Desplazar hacia abajo si el usuario está en la parte más baja del chat
-          if (messages.scrollTop === messages.scrollHeight - messages.clientHeight) {
-              messages.scrollTop = messages.scrollHeight;
-          }
+          // Desplazar hacia abajo
+          scrollToBottom()
       });
 
       // Recibir nuevos mensajes cargados
-      socket.on('chat old messages', (msg, messageId, username) => {
-          const item = `
-              <li>
-                  <small>${username}</small>
-                  <p>${msg}</p>
-              </li>
-          `;
+      socket.on('chat old messages', (msg, messageId, username, timestamp) => {
+        // Formateamos la fecha
+        const formattedDate = new Date(timestamp).toLocaleDateString(undefined, {
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Detectar la zona horaria del usuario
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+        
+        // Formateamos la hora
+        const formattedTime = new Date(timestamp).toLocaleTimeString(undefined, {
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Detectar la zona horaria del usuario
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+
+        const item = `
+            <li>
+                <small>${username} - ${formattedDate} ${formattedTime}</small>
+                <p>${msg}</p>
+            </li>
+        `;
+          
+
           // Insertar al principio de la lista de mensajes
           messages.insertAdjacentHTML('afterbegin', item); // Inserta los mensajes al principio
 
           // Desplazar hacia abajo si el usuario está en la parte más baja del chat
-          if (messages.scrollTop === messages.scrollHeight - messages.clientHeight) {
-              messages.scrollTop = messages.scrollHeight;
-          }
+          scrollToBottom()
       });
 
         // Escuchar el evento de "Cargar más mensajes"
@@ -98,10 +137,16 @@
 
         document.addEventListener('DOMContentLoaded', () => {
           const clearChatBtn = document.getElementById('clearChatBtn');
+          const scrollDownBtn = document.getElementById('scrollDownBtn');
       
           clearChatBtn.addEventListener('click', clearChatForUser);
+
+          scrollDownBtn.addEventListener('click', scrollToBottom)
         });
 
+        function scrollToBottom(){
+            messages.scrollTop = messages.scrollHeight
+        }
         function clearChatForUser() {
           messages.innerHTML = "";  // Limpia solo el chat del usuario actual
         }
@@ -109,6 +154,8 @@
         socket.on('console log server', (msgConsole) => {
           console.log(msgConsole)
         })
+
+        
 
     </script>
 </head>
@@ -165,6 +212,9 @@
               </li>
               <li>
                 <button id="load-more">Cargar más mensajes</button> <!-- Botón para cargar más -->
+              </li>
+              <li>
+                <button id="scrollDownBtn">Bajar al final del chat</button> <!-- Botón para cargar más -->
               </li>
             </ul>
           </article>
