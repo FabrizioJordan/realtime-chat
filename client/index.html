@@ -21,7 +21,7 @@
             const res = await fetch("https://random-data-api.com/api/users/random_user")
             const { username: randomUsername } = await res.json()
 
-            const newRandomUsername = randomUsername.charAt(0).toUpperCase() + newRandomUsername.slice(1)
+            const newRandomUsername = randomUsername.charAt(0).toUpperCase() + randomUsername.slice(1)
             localStorage.setItem('username', newRandomUsername)
             return newRandomUsername
           }catch(err){
