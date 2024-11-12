@@ -17,12 +17,18 @@
             return username.charAt(0).toUpperCase() + username.slice(1)
           }
 
-          const res = await fetch("https://random-data-api.com/api/users/random_user")
-          const { username: randomUsername } = await res.json()
+          try{
+            const res = await fetch("https://random-data-api.com/api/users/random_user")
+            const { username: randomUsername } = await res.json()
 
-          const newRandomUsername = randomUsername.charAt(0).toUpperCase() + newRandomUsername.slice(1)
-          localStorage.setItem('username', newRandomUsername)
-          return newRandomUsername
+            const newRandomUsername = randomUsername.charAt(0).toUpperCase() + newRandomUsername.slice(1)
+            localStorage.setItem('username', newRandomUsername)
+            return newRandomUsername
+          }catch(err){
+            console.error(err)
+            const guestUsername = "Guest" 
+            return guestUsername
+          }
         }
         const socket = io({
           auth:{
