@@ -8,32 +8,6 @@
 
     <script type="module">
 
-function convertUTCDateToLocalDate(date) {
-    // Convierte la fecha UTC a la zona horaria local
-    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-    
-    // Formatea la fecha en el formato deseado
-    return localDate.toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-    });
-}
-
-    
-
-
-      // const timestamp2 = new Date().toISOString(); // Formato de fecha en ISO para uniformidad
-      // var date = convertUTCDateToLocalDate(new Date(timestamp2));
-      // date.toLocaleString();
-
-      // console.log("Hora UTC: "+ timestamp2)
-      // console.log("Hora local: "+ date)
-
         import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js'
 
         const getUsername = async () => {
@@ -50,7 +24,6 @@ function convertUTCDateToLocalDate(date) {
           localStorage.setItem('username', newRandomUsername)
           return newRandomUsername
         }
-
         const socket = io({
           auth:{
             username: await getUsername(),
@@ -58,6 +31,21 @@ function convertUTCDateToLocalDate(date) {
           }
         })
 
+        function convertUTCDateToLocalDate(date) {
+            // Convierte la fecha UTC a la zona horaria local
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            
+            // Formatea la fecha en el formato deseado
+            return localDate.toLocaleString("es-ES", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            });
+        }
 
         const form = document.getElementById('form')
         const input = document.getElementById('input')
@@ -102,10 +90,6 @@ function convertUTCDateToLocalDate(date) {
         socket.on('chat old messages', (msg, messageId, username, timestamp) => {
             const formattedDate = convertUTCDateToLocalDate(new Date(timestamp));
             formattedDate.toLocaleString();
-            
-            
-            console.log(timestamp)
-            console.log(formattedDate)
 
             const item = `
                 <li>
@@ -113,7 +97,6 @@ function convertUTCDateToLocalDate(date) {
                     <p>${msg}</p>
                 </li>
             `;
-            
 
             // Insertar al principio de la lista de mensajes
             messages.insertAdjacentHTML('afterbegin', item); // Inserta los mensajes al principio
@@ -134,7 +117,6 @@ function convertUTCDateToLocalDate(date) {
             loadMoreButton.disabled = true;  // Deshabilitar el botón de cargar más cuando no hay más mensajes
             loadMoreButton.innerText = "No hay más mensajes";  // Cambiar texto del botón
         });
-
         
         form.addEventListener('submit', (e) => {
             e.preventDefault()
@@ -164,8 +146,6 @@ function convertUTCDateToLocalDate(date) {
         socket.on('console log server', (msgConsole) => {
           console.log(msgConsole)
         })
-
-        
 
     </script>
 </head>

@@ -83,8 +83,6 @@ CREATE TABLE IF NOT EXISTS messages (
                 console.error('Error al cargar más mensajes:', error);
             }
         });
-
-
     
         // Cargar solo los mensajes más recientes al conectarse
         const loadRecentMessages = async (limit = 50) => {
@@ -106,7 +104,6 @@ CREATE TABLE IF NOT EXISTS messages (
                 console.error(err);
             }
         };
-    
         // Cargar mensajes recientes al conectar el usuario
         await loadRecentMessages();
         
@@ -127,25 +124,6 @@ CREATE TABLE IF NOT EXISTS messages (
                 console.error(e);
             }
         });
-    
-        /*
-        // Ruta para cargar más mensajes antiguos al solicitarlo desde el cliente
-        socket.on('load older messages', async (lastLoadedId) => {
-            try {
-                const results = await db.execute({
-                    sql: 'SELECT id, content, username FROM messages WHERE id < ? ORDER BY id DESC LIMIT 20',
-                    args: [lastLoadedId]
-                });
-    
-                const olderMessages = results.rows.reverse();
-                olderMessages.forEach(row => {
-                    socket.emit('chat message', row.content, row.id, row.username);
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        });
-        */
     });
     
 

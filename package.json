@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch ./server/index.js",
+    "start": "node ./server/index.js",
     "watch": "concurrently \"node --watch ./server/index.js\" \"tailwindcss -i ./public/input.css -o ./public/styles.css --watch\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
