@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,16 +137,37 @@
           const clearChatBtn = document.getElementById('clearChatBtn');
           const scrollDownBtn = document.getElementById('scrollDownBtn');
           const usernameText = document.getElementById('username');
-      
+
+          const showMenuBtn = document.getElementById('showMenuBtn');
+          
           clearChatBtn.addEventListener('click', clearChatForUser);
 
           scrollDownBtn.addEventListener('click', scrollToBottom)
           
           usernameText.innerHTML = localStorage.getItem('username')
           
+          showMenuBtn.addEventListener('click', showMenu)
 
         });
 
+        function showMenu(){
+          const menuElement = document.getElementById('menu');
+          const accountMenu = document.getElementById('accountMenu');
+
+          if(menuElement.classList.contains('w-min-menu')){
+            menuElement.classList.add('w-mid-menu')
+            menuElement.classList.remove('w-min-menu')
+
+            accountMenu.classList.remove('translate-x-full')
+
+          }else if(menuElement.classList.contains('w-mid-menu')){
+            menuElement.classList.remove('w-mid-menu')
+            menuElement.classList.add('w-min-menu')
+
+            accountMenu.classList.add('translate-x-full')
+          }
+
+        }
         function scrollToBottom(){
             messages.scrollTop = messages.scrollHeight
         }
@@ -163,9 +184,9 @@
 
 <body class="m-0 h-screen w-full flex justify-center">
 
-    <section class="w-full h-full max-h-[100vh] flex flex-col gap-4 items-center pt-2 pb-4">
+    <section class="w-full h-full max-h-[100vh] flex flex-col items-center pt-2 pb-4">
 
-      <header class="bg-transparent w-full flex justify-between items-center px-4">
+      <header class="bg-transparent w-full flex justify-between items-center px-4 pb-2 border-b border-[#3333339a]">
         <article class="">
           <h1 class="text-xl font-bold tracking-wide">Real Time Chat</h1>
           <p class="text-sm text-gray-600">by FabricioJordán</p>
@@ -183,39 +204,53 @@
         <section class="flex flex-col gap-4 w-full h-full ">
           <section id="chat" class="overflow-hidden w-full h-full relative">
             <ul id="messages"
-            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-[6.8rem] [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]
-            [&_span]:font-medium [&_span]:text-sm [&_span]:tracking-wider [&_hr]:w-full [&_hr]:bg-[#333]">
+            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-[6.8rem] 
+            [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#dddddd] even:[&>li]:bg-[#c4c4c4] dark:odd:[&>li]:bg-[#1b1b1b] dark:even:[&>li]:bg-[#141414] text-black dark:text-white
+            [&_span]:font-medium [&_span]:text-sm [&_span]:tracking-wider">
             </ul>
 
             <form id="form" 
-            class="h-[100px] bottom-0 left-0 right-2 absolute rounded-lg
-            flex flex-col gap-1 bg-[#1d1d1d] px-3 py-2 mr-4 ml-3 mb-2 "
+            class="h-min bottom-0 left-0 right-2 absolute overflow-hidden rounded-lg
+             bg-[#121212] px-3 py-3 mr-4 ml-3 mb-2 
+            "
             >
-              <div class="">
-                <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" 
-                class="w-full rounded-full border border-[#eeeeee8e] flex-1 m-1 py-0 px-3 focus:outline-0"
-                />
-              </div>
-              <div>
-                <button class="rounded-lg text-white border-0 m-1 bg-[#0099ffb3] hover:bg-[#0099ff8c] px-3 py-2 transition-colors duration-300" type="submit">Enviar</button>
+              <div class=" w-full h-full">
+                <div class="relative w-full h-full flex justify-end items-center">
+                  <input type="text" name="message" id="input" placeholder="Write a message..." autocomplete="off" 
+                  class="relative w-full py-3 px-4 rounded-2xl text-sm bg-[#333] placeholder:text-[#ccc] focus-visible:outline-[#5e5e5e]"
+                  />
+                  <button class="absolute rounded-xl text-base text-[#c9c9c9] px-4 py-1.5" type="submit">Send</button>
+                </div>
               </div>
             </form>
+
           </section>
+
         </section>
 
-        <section class="bg-[#30303083] w-[40%] h-full flex flex-col gap-8 justify-start items-start py-6 px-3">
+        <section id="menu" class="w-min-menu h-full flex flex-col gap-2 py-6 px-3 overflow-hidden ligth: dark:bg-[#212121] transition-all duration-500">
+
+          <div class="">
+            <button class="size-8">
+              <img id="showMenuBtn" class="w-full h-full" src="./icons/left-circle.svg" alt="">
+            </button>
+          </div>
+
+          <section id="accountMenu" class="translate-x-full transition-transform duration-500 h-full flex flex-col gap-4 justify-start items-start">
           
             <article class="flex flex-col gap-2">
               <h5 class="font-semibold text-lg">User Account</h5>
-              <section class="flex flex-row gap-4 justify-start items-center ">
-                <div>
-                  <img class="size-8 bg-[#333] rounded-full p-1" src="./icons/user-white.svg" alt="">
+              <section class="flex flex-row gap-2 justify-start items-center ">
+                <div class="">
+                  <img class="size-8 min-w-8 min-h-8 bg-[#333] rounded-full p-1" src="./icons/user-white.svg" alt="">
                 </div>
                 <div>
                   <p><span id="username"></span></p>
                 </div>
               </section>
             </article>
+
+            <hr class="w-full border-[#464646]">
 
             <article class="">
               <ul class="flex flex-col gap-4">
@@ -230,6 +265,11 @@
                 </li>
               </ul>
             </article>
+            
+            <hr class="w-full border-[#464646]">
+
+        </section>
+
         </section>
       </main>
 
