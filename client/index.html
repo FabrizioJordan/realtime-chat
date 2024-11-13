@@ -12,8 +12,8 @@
 
         const getUsername = async () => {
           const username = localStorage.getItem('username')
+          localStorage.setItem('username', username.charAt(0).toUpperCase() + username.slice(1))
           if(username){
-            console.log(`User ${username} exists`)
             return username.charAt(0).toUpperCase() + username.slice(1)
           }
 
@@ -27,6 +27,7 @@
           }catch(err){
             console.error(err)
             const guestUsername = "Guest" 
+            localStorage.setItem('username', guestUsername)
             return guestUsername
           }
         }
@@ -65,7 +66,6 @@
         // Recibir nuevos mensajes cargados
         socket.on('chat message', (msg, messageId, username, timestamp) => {
           const formattedDate = new Date(timestamp).toLocaleString();
-          
           
           const item = `
               <li>  
@@ -136,10 +136,15 @@
         document.addEventListener('DOMContentLoaded', () => {
           const clearChatBtn = document.getElementById('clearChatBtn');
           const scrollDownBtn = document.getElementById('scrollDownBtn');
+          const usernameText = document.getElementById('username');
       
           clearChatBtn.addEventListener('click', clearChatForUser);
 
           scrollDownBtn.addEventListener('click', scrollToBottom)
+          
+          usernameText.innerHTML = localStorage.getItem('username')
+          
+
         });
 
         function scrollToBottom(){
@@ -158,7 +163,7 @@
 
 <body class="m-0 h-screen w-full flex justify-center">
 
-    <section class="max-w-4xl w-full h-full max-h-[1000vh] flex flex-col gap-6 items-center pt-2 pb-4">
+    <section class="w-full h-full max-h-[100vh] flex flex-col gap-4 items-center pt-2 pb-4">
 
       <header class="bg-transparent w-full flex justify-between items-center px-4">
         <article class="">
@@ -173,14 +178,12 @@
         </article>
       </header>
 
-      <main class="w-full h-full max-h-[86vh] flex place-content-center border border-[#cccccc36] rounded-[8px]">
+      <main class="w-full h-full max-h-[88vh] flex place-content-center">
 
         <section class="flex flex-col gap-4 w-full h-full ">
           <section id="chat" class="overflow-hidden w-full h-full relative">
-
-            <h2 class="text-xl font-bold tracking-wider text-center ">Chat Room</h2>
             <ul id="messages"
-            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-[9rem] [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]
+            class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-[6.8rem] [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#1b1b1b] even:[&>li]:bg-[#141414]
             [&_span]:font-medium [&_span]:text-sm [&_span]:tracking-wider [&_hr]:w-full [&_hr]:bg-[#333]">
             </ul>
 
@@ -200,20 +203,33 @@
           </section>
         </section>
 
-        <section class="bg-[#30303083] w-[40%] h-full rounded-r-[8px]">
-          <article class="">
-            <ul class="flex flex-col gap-4 px-4 py-3">
-              <li>
-                <button id="clearChatBtn">Clear My Chat</button>
-              </li>
-              <li>
-                <button id="load-more">Cargar más mensajes</button> <!-- Botón para cargar más -->
-              </li>
-              <li>
-                <button id="scrollDownBtn">Bajar al final del chat</button> <!-- Botón para cargar más -->
-              </li>
-            </ul>
-          </article>
+        <section class="bg-[#30303083] w-[40%] h-full flex flex-col gap-8 justify-start items-start py-6 px-3">
+          
+            <article class="flex flex-col gap-2">
+              <h5 class="font-semibold text-lg">User Account</h5>
+              <section class="flex flex-row gap-4 justify-start items-center ">
+                <div>
+                  <img class="size-8 bg-[#333] rounded-full p-1" src="./icons/user-white.svg" alt="">
+                </div>
+                <div>
+                  <p><span id="username"></span></p>
+                </div>
+              </section>
+            </article>
+
+            <article class="">
+              <ul class="flex flex-col gap-4">
+                <li>
+                  <button id="clearChatBtn">Clear My Chat</button>
+                </li>
+                <li>
+                  <button id="load-more">Cargar más mensajes</button> <!-- Botón para cargar más -->
+                </li>
+                <li>
+                  <button id="scrollDownBtn">Bajar al final del chat</button> <!-- Botón para cargar más -->
+                </li>
+              </ul>
+            </article>
         </section>
       </main>
 
