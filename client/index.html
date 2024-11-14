@@ -152,15 +152,38 @@
 
         function showMenu(){
           const menuElement = document.getElementById('menu');
+          const sectionChat = document.getElementById('sectionChat');
           const accountMenu = document.getElementById('accountMenu');
+          
+          // 
+          // if mobile
+          if(menuElement.classList.contains('w-min-menu') && window.innerWidth <= 640){
+            // if menu is closed -> open
+            menuElement.classList.add('min-w-webkit-fill-available')
+            menuElement.classList.remove('w-min-menu')
+            sectionChat.classList.add('overflow-hidden')
+            accountMenu.classList.remove('translate-x-full')
 
-          if(menuElement.classList.contains('w-min-menu')){
+          }else if(menuElement.classList.contains('min-w-webkit-fill-available') && window.innerWidth <= 640){
+            // if menu is opened -> close
+            menuElement.classList.remove('min-w-webkit-fill-available')
+            menuElement.classList.add('w-min-menu')
+            sectionChat.classList.remove('overflow-hidden')
+
+            accountMenu.classList.add('translate-x-full')
+          }
+
+
+          // if no mobile
+          if(menuElement.classList.contains('w-min-menu') && window.innerWidth > 640){
+            // if menu is closed -> open
             menuElement.classList.add('w-mid-menu')
             menuElement.classList.remove('w-min-menu')
 
             accountMenu.classList.remove('translate-x-full')
 
-          }else if(menuElement.classList.contains('w-mid-menu')){
+          }else if(menuElement.classList.contains('w-mid-menu') && window.innerWidth > 640){
+            // if menu is opened -> close
             menuElement.classList.remove('w-mid-menu')
             menuElement.classList.add('w-min-menu')
 
@@ -184,7 +207,7 @@
 
 <body class="m-0 h-screen w-full flex justify-center">
 
-    <section class="w-full h-full max-h-[100vh] flex flex-col items-center pt-2 pb-4">
+    <section id="sectionChat" class="w-full h-full max-h-[100vh] flex flex-col items-center pt-2 pb-4">
 
       <header class="bg-transparent w-full flex justify-between items-center px-4 pb-2 border-b border-[#3333339a]">
         <article class="">
@@ -193,7 +216,7 @@
         </article>
 
         <article class="">
-          <a class="hover:" href="https://github.com/FabrizioJordan/realtime-chat" target="_blank" rel="noopener noreferrer">
+          <a class="" href="https://github.com/FabrizioJordan/realtime-chat" target="_blank" rel="noopener noreferrer">
             <img class="size-6 invertSvg hover:opacity-65 transition-opacity duration-300" src="./icons/github.svg" alt="">
           </a>
         </article>
@@ -206,7 +229,7 @@
             <ul id="messages"
             class="list-none m-0 p-0 overflow-y-auto h-full scroll-smooth pb-[6.8rem] 
             [&>li]:py-[.5rem] [&>li]:px-[1rem] odd:[&>li]:bg-[#dddddd] even:[&>li]:bg-[#c4c4c4] dark:odd:[&>li]:bg-[#1b1b1b] dark:even:[&>li]:bg-[#141414] text-black dark:text-white
-            [&_span]:font-medium [&_span]:text-sm [&_span]:tracking-wider">
+            [&_p]:tracking-wide [&_small]:text-sm [&_small]:tracking-wider">
             </ul>
 
             <form id="form" 
@@ -228,7 +251,7 @@
 
         </section>
 
-        <section id="menu" class="w-min-menu min-w-[3.4em] h-full flex flex-col gap-2 py-6 px-3 overflow-hidden transition-all duration-500">
+        <section id="menu" class="w-min-menu sm:min-w-20 h-full flex flex-col gap-2 py-6 px-3 overflow-hidden transition-all duration-500">
 
           <div class="">
             <button class="size-8">

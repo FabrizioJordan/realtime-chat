@@ -18,8 +18,11 @@ export default {
         'full': '100vw',
       },
       width: {
-        'min-menu': '5%',
+        'min-menu': '3.4em',
         'mid-menu': '25%'
+      },
+      minWidth: {
+        'webkit-fill-available': '-webkit-fill-available'
       }
     }
   },
