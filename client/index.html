@@ -148,7 +148,23 @@
           
           showMenuBtn.addEventListener('click', showMenu)
 
+
+          // second btns list
+          
+          const changeNameBtn = document.getElementById('changeNameBtn');
+          changeNameBtn.addEventListener('click', changeName)
+          
         });
+
+        function changeName(){
+          const newName = prompt('Ingrese su nuevo nombre de usuario')
+          if(newName != null && newName != undefined && newName != "" && newName != " "){
+            localStorage.setItem('username', newName)
+            location.reload()
+            // send to backend change name
+            socket.emit('change name', newName)
+          }
+        }
 
         function showMenu(){
           const menuElement = document.getElementById('menu');
@@ -268,7 +284,7 @@
                   <img class="size-8 min-w-8 min-h-8 bg-[#333] rounded-full p-1" src="./icons/user-white.svg" alt="">
                 </div>
                 <div>
-                  <p><span id="username"></span></p>
+                  <p class="font-medium tracking-wide"><span id="username"></span></p>
                 </div>
               </section>
             </article>
@@ -293,7 +309,9 @@
 
             <article>
               <ul class="">
-
+                <li>
+                  <button id="changeNameBtn">Change your name</button>
+                </li>
               </ul>
             </article>
 

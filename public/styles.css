@@ -645,10 +645,6 @@ video {
   min-width: 2rem;
 }
 
-.min-w-\[3\.4em\] {
-  min-width: 3.4em;
-}
-
 .min-w-webkit-fill-available {
   min-width: -webkit-fill-available;
 }
@@ -843,6 +839,10 @@ video {
   font-weight: 600;
 }
 
+.font-medium {
+  font-weight: 500;
+}
+
 .tracking-wide {
   letter-spacing: 0.025em;
 }
@@ -927,12 +927,6 @@ video {
 @media (min-width: 640px) {
   .sm\:min-w-20 {
     min-width: 5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .md\:min-w-webkit-fill-available {
-    min-width: -webkit-fill-available;
   }
 }
 

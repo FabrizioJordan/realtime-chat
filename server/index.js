@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS messages (
 )
     `)
 
-
-
     io.on('connection', async (socket) => {
         console.log('a user has connected')
     
@@ -124,6 +122,18 @@ CREATE TABLE IF NOT EXISTS messages (
                 console.error(e);
             }
         });
+
+        socket.on('change name', (newName) => {
+            // modify username in db
+            db.execute({
+                sql: 'UPDATE messages SET username = ? WHERE id = ?',
+                args: [newName, socket.handshake.auth.id]
+            });
+
+        })
+
+
+
     });
     
 
