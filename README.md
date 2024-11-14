@@ -16,6 +16,15 @@ You can find the source code in the [GitHub repository](https://github.com/Fabri
 
 
 1. Clone the repository.
+    ```sh
+    git clone https://github.com/FabrizioJordan/realtime-chat.git
+    ```
+
+2. Change directory to the cloned repository 
+
+    ```sh
+    cd realtime-chat
+    ```
 
 2. Install the dependencies.
 
@@ -31,7 +40,7 @@ You can find the source code in the [GitHub repository](https://github.com/Fabri
 
 4. Put your ideas inside the code
 
-5. And finish with a PR.
+5. And finish with a PR (pull request).
 
 
 <!--
