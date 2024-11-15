@@ -133,31 +133,29 @@
             }
         })
 
+
         document.addEventListener('DOMContentLoaded', () => {
           const clearChatBtn = document.getElementById('clearChatBtn');
           const scrollDownBtn = document.getElementById('scrollDownBtn');
           const usernameText = document.getElementById('username');
-
           const showMenuBtn = document.getElementById('showMenuBtn');
           
           clearChatBtn.addEventListener('click', clearChatForUser);
-
           scrollDownBtn.addEventListener('click', scrollToBottom)
+          showMenuBtn.addEventListener('click', showMenu)
           
           usernameText.innerHTML = localStorage.getItem('username')
-          
-          showMenuBtn.addEventListener('click', showMenu)
-
 
           // second btns list
           
           const changeNameBtn = document.getElementById('changeNameBtn');
-          changeNameBtn.addEventListener('click', changeName)
+          changeNameBtn.addEventListener('click', openNamePopUp)
           
         });
 
-        function changeName(){
-          const newName = prompt('Ingrese su nuevo nombre de usuario')
+
+        function changeName(newName){
+          // const newName = prompt('Ingrese su nuevo nombre de usuario')
           if(newName != null && newName != undefined && newName != "" && newName != " " && newName != "⠀"){
             const newerName = validateName(newName)
             // send to backend change name
@@ -219,6 +217,52 @@
           }
 
         }
+
+        function getNameFromPopUp(){
+          const namePopUp = document.getElementById('insertNamePopUp');
+          const inputName = document.getElementById('inputName');
+          const nameForm = document.getElementById('nameForm');
+          
+          nameForm.addEventListener('submit', (e) => {
+              e.preventDefault()
+              let nameValue = "Guest"
+
+              if(inputName.value != "Guest" || inputName.value != "" || inputName.value != " " || inputName.value != null || inputName.value != undefined){
+                nameValue = inputName.value
+                namePopUp.classList.add('hidden')
+              }
+
+              changeName(nameValue)
+          })
+        }
+
+        function openNamePopUp(){
+          const namePopUp = document.getElementById('insertNamePopUp');
+          const inputName = document.getElementById('inputName');
+          const nameForm = document.getElementById('nameForm');
+          const submitName = document.getElementById('submitName');
+
+          
+          inputName.value = localStorage.getItem('username')
+          
+          namePopUp.classList.remove('hidden')
+          submitName.addEventListener('click', () => {
+            getNameFromPopUp()
+          })
+
+          closeNamePopUp()
+        }
+        
+        function closeNamePopUp(){
+          const namePopUp = document.getElementById('insertNamePopUp');
+          const closeNamePopUpBtn = document.getElementById('closeNamePopUpBtn')
+          closeNamePopUpBtn.addEventListener('click', {
+            handleEvent: () => {
+              namePopUp.classList.add('hidden')
+            }
+          })
+        }
+
         function scrollToBottom(){
             messages.scrollTop = messages.scrollHeight
         }
@@ -332,6 +376,29 @@
 
         </section>
       </main>
+
+
+      <div id="insertNamePopUp" class="hidden flex w-full h-screen top-0 fixed justify-center items-center backdrop-brightness-50">
+        <article class="relative w-full h-full sm:w-3/5 sm:h-3/5 m-auto bg-neutral-800 text-white sm:rounded-lg flex flex-col justify-center items-center">
+          <h1 class="font-bold text-2xl"></h1>
+          <main id="mainPhonePop" class="">
+            <form id="nameForm" action="" class="flex flex-col gap-4 justify-center items-center max-w-xs text-center">
+              <p class="text-sm text-[#c6c6c6]">Please enter your name. If you want to keep the actual name, just press Quit (X).</p>
+              <input id="inputName" type="text" value="Guest" class="px-3 py-2 rounded-lg">
+              <button id="submitName" type="submit" class="px-3 py-2 text-medium font-semibold tracking-wider text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                Change Name
+              </button>
+            </form>
+          </main>
+
+          <div class="absolute top-12 right-12 size-8">
+            <button id="closeNamePopUpBtn">
+              <img class="w-8 h-8 invert" src="/icons/x.svg" alt="">
+            </button>
+          </div>
+
+        </article>
+      </div>
 
     </section>
   
