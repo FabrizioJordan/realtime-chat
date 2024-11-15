@@ -152,7 +152,6 @@ CREATE TABLE IF NOT EXISTS messages (
             newMsg = newMsg.replace("]", " ] ")
             newMsg = newMsg.replace("[", " [ ")
 
-
             return newMsg
         }
 
