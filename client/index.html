@@ -158,12 +158,24 @@
 
         function changeName(){
           const newName = prompt('Ingrese su nuevo nombre de usuario')
-          if(newName != null && newName != undefined && newName != "" && newName != " "){
-            localStorage.setItem('username', newName)
-            location.reload()
+          if(newName != null && newName != undefined && newName != "" && newName != " " && newName != "⠀"){
+            const newerName = validateName(newName)
             // send to backend change name
-            socket.emit('change name', newName)
+            localStorage.setItem('username', newerName)
+            location.reload()
+            socket.emit('change name', newerName)
           }
+        }
+
+        
+        function validateName(newName){
+            let newerName = newName
+        
+            if(newerName.includes("\\") || newerName.includes("/") || newerName.includes("<") || newerName.includes("!") || newerName.includes(">") || newerName.includes("&") || newerName.includes("onclick") || newerName.includes("onClick") || newerName.includes("onerror") || newerName.includes("onError") || newerName.includes("javascript") || newerName.includes("%")){
+              return "Bad User"
+            }
+
+            return newerName
         }
 
         function showMenu(){
@@ -255,7 +267,8 @@
             >
               <div class=" w-full h-full">
                 <div class="relative w-full h-full flex justify-end items-center">
-                  <input type="text" name="message" id="input" placeholder="Write a message..." autocomplete="off" 
+                  <input type="text" name="message" id="input" placeholder="Write a message..." autocomplete="on" minlength="1" maxlength="150" title="Mensaje. Tamaño de 1 a 150."
+                  
                   class="relative w-full py-3 px-5 rounded-2xl text-sm bg-[#333] placeholder:text-[#ccc] focus-visible:outline focus-visible:outline-[#5e5e5e]"
                   />
                   <button class="absolute rounded-xl text-base text-[#c9c9c9] px-5 py-1.5" type="submit">Send</button>

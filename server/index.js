@@ -107,32 +107,54 @@ CREATE TABLE IF NOT EXISTS messages (
         
         socket.on('chat message', async (msg) => {
             const username = socket.handshake.auth.username ?? 'anonymous';
+
+            const newMsg = validateMsg(msg)
             try {
                 const result = await db.execute({
-                    sql: `INSERT INTO messages (content, username) VALUES (:msg, :username)`,
-                    args: { msg, username }
+                    sql: `INSERT INTO messages (content, username) VALUES (:newMsg, :username)`,
+                    args: { newMsg, username }
                 });
         
                 const messageId = result.lastInsertRowid;
                 const timestamp = new Date().toISOString(); // Formato de fecha en ISO para uniformidad
 
                 // Emitir el evento de nuevo mensaje al cliente
-                io.emit('chat message', msg, messageId.toString(), username, timestamp); 
+                io.emit('chat message', newMsg, messageId.toString(), username, timestamp); 
             } catch (e) {
                 console.error(e);
             }
         });
 
-        socket.on('change name', (newName) => {
+        socket.on('change name', (newerName) => {
             // modify username in db
             db.execute({
                 sql: 'UPDATE messages SET username = ? WHERE id = ?',
-                args: [newName, socket.handshake.auth.id]
+                args: [newerName, socket.handshake.auth.id]
             });
 
         })
 
+        function validateMsg(msg){
+            let newMsg = msg
 
+            newMsg = newMsg.replace("\\", " \\ ")
+            newMsg = newMsg.replace("/", " / ")
+            newMsg = newMsg.replace("<", " < ").replace(">", " > ")
+            newMsg = newMsg.replace("alert(", "alert ( ")
+            newMsg = newMsg.replace("!", " ! ")
+            newMsg = newMsg.replace("&", " & ")
+            newMsg = newMsg.replace("onclick", "onclick ")
+            newMsg = newMsg.replace("onClick", "onClick ")
+            newMsg = newMsg.replace("onerror", "onerror ")
+            newMsg = newMsg.replace("onError", "onError ")
+            newMsg = newMsg.replace("javascript", "javascript ")
+            newMsg = newMsg.replace("%", " % ")
+            newMsg = newMsg.replace("]", " ] ")
+            newMsg = newMsg.replace("[", " [ ")
+
+
+            return newMsg
+        }
 
     });
     
