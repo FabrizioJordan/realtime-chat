@@ -121,7 +121,7 @@
         // Escuchar el evento 'no more messages' para notificar que no hay más mensajes
         socket.on('no more messages', () => {
             loadMoreButton.disabled = true;  // Deshabilitar el botón de cargar más cuando no hay más mensajes
-            loadMoreButton.innerText = "No hay más mensajes";  // Cambiar texto del botón
+            loadMoreButton.innerText = "No more messages";  // Cambiar texto del botón
         });
         
         form.addEventListener('submit', (e) => {
@@ -351,13 +351,13 @@
             <article class="">
               <ul class="flex flex-col gap-4">
                 <li>
-                  <button id="clearChatBtn">Clear My Chat</button>
+                  <button id="clearChatBtn">Clear my chat</button>
                 </li>
                 <li>
-                  <button id="load-more">Cargar más mensajes</button> <!-- Botón para cargar más -->
+                  <button id="load-more">Load more messages</button> <!-- Botón para cargar más -->
                 </li>
                 <li>
-                  <button id="scrollDownBtn">Bajar al final del chat</button> <!-- Botón para cargar más -->
+                  <button id="scrollDownBtn">Go down in the chat</button> <!-- Botón para cargar más -->
                 </li>
               </ul>
             </article>
@@ -367,7 +367,7 @@
             <article>
               <ul class="">
                 <li>
-                  <button id="changeNameBtn">Change your name</button>
+                  <button id="changeNameBtn">Change name</button>
                 </li>
               </ul>
             </article>
